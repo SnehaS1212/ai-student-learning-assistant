@@ -33,7 +33,7 @@ else:
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 ALLOWED_EXTENSIONS = {"pdf", "txt", "docx", "doc", "png", "jpg", "jpeg", "md"}
-MAX_CONTENT_LENGTH = 32 * 1024 * 1024  # 32 MB
+MAX_CONTENT_LENGTH = 100 * 1024 * 1024  # 100 MB
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
@@ -53,7 +53,9 @@ def get_groq_client():
 # ==========================================================================
 # DATABASE SCHEMAS & UTILITIES
 # ==========================================================================
-if os.environ.get("VERCEL"):
+if os.environ.get("PERSISTENT_DB_PATH"):
+    DATABASE = os.environ.get("PERSISTENT_DB_PATH")
+elif os.environ.get("VERCEL"):
     DATABASE = "/tmp/database.db"
 else:
     DATABASE = "database.db"
@@ -116,9 +118,12 @@ def init_db():
             )
         """)
         
+        # Migrate any 'Student' records to 'Maria John'
+        cursor.execute("UPDATE quiz_results SET username = 'Maria John' WHERE username = 'Student'")
+        
         conn.commit()
         conn.close()
-        logger.info("EduAI Pro Database Tables initialized successfully.")
+        logger.info("EduAI Pro Database Tables initialized and records migrated successfully.")
     except Exception as e:
         logger.error(f"Failed to initialize database: {e}")
         raise
@@ -193,7 +198,7 @@ def extract_clean_text_from_file(filepath):
             
             logger.info(f"Extracting text from image {filepath} using Groq vision model...")
             response = client.chat.completions.create(
-                model="llama-3.2-11b-vision-preview",
+                model="meta-llama/llama-4-scout-17b-16e-instruct",
                 messages=[
                     {
                         "role": "user",
@@ -234,9 +239,72 @@ def extract_clean_text_from_file(filepath):
 # ==========================================================================
 # GROQ AI AGENT CALLS
 # ==========================================================================
+def call_groq_with_fallback(prompt, system_prompt=None, primary_model="llama-3.3-70b-versatile", fallback_model="llama-3.1-8b-instant", temperature=0.5, max_tokens=3000):
+    """Call Groq chat completions API with primary model and automatic fallback to a secondary model on error."""
+    client = get_groq_client()
+    messages = []
+    if system_prompt:
+        messages.append({"role": "system", "content": system_prompt})
+    messages.append({"role": "user", "content": prompt})
+
+    try:
+        logger.info(f"Attempting API call using primary model '{primary_model}'...")
+        response = client.chat.completions.create(
+            model=primary_model,
+            messages=messages,
+            temperature=temperature,
+            max_tokens=max_tokens,
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        logger.warning(f"Primary model '{primary_model}' failed with error: {e}. Automatically falling back to '{fallback_model}'...")
+        response = client.chat.completions.create(
+            model=fallback_model,
+            messages=messages,
+            temperature=temperature,
+            max_tokens=max_tokens,
+        )
+        return response.choices[0].message.content
+
+def parse_json_from_llm(raw_content, is_list=True):
+    """Robustly parse JSON list or object output from LLM, stripping surrounding markdown or conversations."""
+    raw_content = raw_content.strip()
+    
+    # 1. Try split by code fence blocks
+    if "```" in raw_content:
+        parts = raw_content.split("```")
+        for part in parts:
+            part_clean = part.strip()
+            if part_clean.startswith("json"):
+                part_clean = part_clean[4:].strip()
+            if is_list and part_clean.startswith("[") and part_clean.endswith("]"):
+                try:
+                    return json.loads(part_clean)
+                except Exception:
+                    pass
+            elif not is_list and part_clean.startswith("{") and part_clean.endswith("}"):
+                try:
+                    return json.loads(part_clean)
+                except Exception:
+                    pass
+
+    # 2. Try locating start/end bracket/brace
+    start_char = "[" if is_list else "{"
+    end_char = "]" if is_list else "}"
+    start_idx = raw_content.find(start_char)
+    end_idx = raw_content.rfind(end_char)
+    if start_idx != -1 and end_idx != -1 and start_idx < end_idx:
+        candidate = raw_content[start_idx:end_idx + 1]
+        try:
+            return json.loads(candidate)
+        except Exception:
+            pass
+
+    # 3. Direct decode fallback
+    return json.loads(raw_content)
+
 def generate_summaries(text):
     """Generate 4 summary formats from study text in a single structured prompt."""
-    client = get_groq_client()
     trimmed_text = text[:8000]
 
     prompt = f"""You are an EdTech reading specialist. Based on the study material below, generate four distinct summary styles:
@@ -259,13 +327,7 @@ Study Material:
 {trimmed_text}
 """
     try:
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.4,
-            max_tokens=3000,
-        )
-        content = response.choices[0].message.content
+        content = call_groq_with_fallback(prompt, temperature=0.4, max_tokens=3000)
 
         # Parsing using regex
         detailed = re.search(r'\[DETAILED_SUMMARY\](.*?)\[SHORT_SUMMARY\]', content, re.DOTALL)
@@ -285,7 +347,6 @@ Study Material:
 
 def generate_flashcards(text):
     """Generate a clean list of 20 conceptual flashcards."""
-    client = get_groq_client()
     trimmed_text = text[:7000]
 
     prompt = f"""Based on the study notes below, generate exactly 20 conceptual flashcards in a valid JSON list.
@@ -299,20 +360,8 @@ Study Notes:
 {trimmed_text}
 """
     try:
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.5,
-            max_tokens=2500,
-        )
-        raw_content = response.choices[0].message.content.strip()
-        if raw_content.startswith("```"):
-            raw_content = raw_content.split("```")[1]
-            if raw_content.startswith("json"):
-                raw_content = raw_content[4:]
-            raw_content = raw_content.strip()
-
-        cards = json.loads(raw_content)
+        raw_content = call_groq_with_fallback(prompt, temperature=0.5, max_tokens=2500)
+        cards = parse_json_from_llm(raw_content, is_list=True)
         return cards if isinstance(cards, list) else []
     except Exception as e:
         logger.error(f"Failed to generate flashcards: {e}")
@@ -320,7 +369,6 @@ Study Notes:
 
 def generate_quiz(text, difficulty, count):
     """Generate a quiz with custom difficulty and question count."""
-    client = get_groq_client()
     trimmed_text = text[:8000]
 
     prompt = f"""Based on the study material below, generate exactly {count} multiple-choice questions (MCQs) in a valid JSON list format.
@@ -338,20 +386,8 @@ Study Material:
 {trimmed_text}
 """
     try:
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.5,
-            max_tokens=3000,
-        )
-        raw_content = response.choices[0].message.content.strip()
-        if raw_content.startswith("```"):
-            raw_content = raw_content.split("```")[1]
-            if raw_content.startswith("json"):
-                raw_content = raw_content[4:]
-            raw_content = raw_content.strip()
-
-        quiz_list = json.loads(raw_content)
+        raw_content = call_groq_with_fallback(prompt, temperature=0.5, max_tokens=3000)
+        quiz_list = parse_json_from_llm(raw_content, is_list=True)
         return quiz_list if isinstance(quiz_list, list) else []
     except Exception as e:
         logger.error(f"Failed to generate quiz: {e}")
@@ -359,8 +395,6 @@ Study Material:
 
 def generate_tutor_analytics_and_study_plans(quiz_data, user_answers):
     """Perform performance evaluation, tutoring feedback, weak area detection, and study plan generator in a single call."""
-    client = get_groq_client()
-    
     # Bundle input for Groq analysis
     submission_bundle = []
     for idx, q in enumerate(quiz_data):
@@ -426,20 +460,8 @@ Return ONLY a valid JSON object matching this exact structure:
 Make sure the keys in 'tutor_feedback' correspond to the question index (e.g., "0", "2") of incorrect answers. If all questions are correct, return an empty object for 'tutor_feedback'.
 """
     try:
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.4,
-            max_tokens=3500,
-        )
-        raw_content = response.choices[0].message.content.strip()
-        if raw_content.startswith("```"):
-            raw_content = raw_content.split("```")[1]
-            if raw_content.startswith("json"):
-                raw_content = raw_content[4:]
-            raw_content = raw_content.strip()
-
-        return json.loads(raw_content)
+        raw_content = call_groq_with_fallback(prompt, temperature=0.4, max_tokens=3500)
+        return parse_json_from_llm(raw_content, is_list=False)
     except Exception as e:
         logger.error(f"Failed to generate tutor analytics: {e}")
         # Return fallback structure
@@ -462,8 +484,8 @@ Make sure the keys in 'tutor_feedback' correspond to the question index (e.g., "
 def home():
     """Portal Dashboard listing uploaded files, quiz analytics charts, and historical summary logs."""
     # Ensure a default username exists in session to simulate user logins
-    if "username" not in session:
-        session["username"] = "Student"
+    if "username" not in session or session["username"] == "Student":
+        session["username"] = "Maria John"
 
     conn = get_db_connection()
     materials = conn.execute("SELECT id, filename, created_at FROM materials ORDER BY id DESC").fetchall()
@@ -526,7 +548,7 @@ def upload():
         flash("Please select at least one valid file or folder.", "warning")
         return redirect(url_for("home"))
 
-    success_count = 0
+    success_files = []
     fail_messages = []
     
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
@@ -576,7 +598,7 @@ def upload():
                     VALUES (?, ?, ?)
                 """, (material_id, card.get("front", "No Question"), card.get("back", "No Answer")))
                 
-            success_count += 1
+            success_files.append(base_filename)
         except Exception as e:
             logger.error(f"Failed to process '{base_filename}': {e}")
             fail_messages.append(f"Failed to process '{base_filename}': {str(e)}")
@@ -584,8 +606,14 @@ def upload():
     conn.commit()
     conn.close()
 
-    if success_count > 0:
-        flash(f"Successfully uploaded and processed {success_count} file(s)!", "success")
+    if success_files:
+        if len(success_files) == 1:
+            success_msg = f"Successfully uploaded and processed '{success_files[0]}'!"
+        elif len(success_files) == 2:
+            success_msg = f"Successfully uploaded and processed '{success_files[0]}' and '{success_files[1]}'!"
+        else:
+            success_msg = f"Successfully uploaded and processed {', '.join(f"'{f}'" for f in success_files[:-1])}, and '{success_files[-1]}'!"
+        flash(success_msg, "success")
     if fail_messages:
         for msg in fail_messages:
             flash(msg, "danger")
@@ -594,26 +622,70 @@ def upload():
 
 @app.route("/summary/<int:material_id>")
 def summary(material_id):
-    """Render the 4 generated summary types."""
+    """Render the 4 generated summary types, auto-regenerating if previously failed."""
     conn = get_db_connection()
     mat = conn.execute("SELECT * FROM materials WHERE id = ?", (material_id,)).fetchone()
-    conn.close()
+    
     if not mat:
+        conn.close()
         flash("Material not found.", "danger")
         return redirect(url_for("home"))
+        
+    # Self-heal check: if summaries were failed placeholders, regenerate them
+    if (not mat["summary_detailed"] or "Error generating summary." in mat["summary_detailed"] or
+        not mat["summary_short"] or "Error generating summary." in mat["summary_short"]):
+        logger.info(f"Summary for material {material_id} is missing or broken. Regenerating on the fly...")
+        try:
+            det, sh, rev, op = generate_summaries(mat["extracted_text"])
+            conn.execute("""
+                UPDATE materials 
+                SET summary_detailed = ?, summary_short = ?, summary_revision = ?, summary_onepage = ?
+                WHERE id = ?
+            """, (det, sh, rev, op, material_id))
+            conn.commit()
+            # Fetch updated record
+            mat = conn.execute("SELECT * FROM materials WHERE id = ?", (material_id,)).fetchone()
+            flash("Summaries regenerated successfully!", "success")
+        except Exception as e:
+            logger.error(f"Failed to regenerate summaries on the fly: {e}")
+            flash("Summaries could not be generated at this moment. Groq API might be experiencing high traffic.", "warning")
+
+    conn.close()
     return render_template("summary.html", material=mat)
 
 @app.route("/flashcards/<int:material_id>")
 def flashcards(material_id):
-    """Interactive player for generated flashcards."""
+    """Interactive player for generated flashcards, auto-regenerating if none exist."""
     conn = get_db_connection()
-    mat = conn.execute("SELECT filename FROM materials WHERE id = ?", (material_id,)).fetchone()
-    cards = conn.execute("SELECT front, back FROM flashcards WHERE material_id = ?", (material_id,)).fetchall()
-    conn.close()
+    mat = conn.execute("SELECT filename, extracted_text FROM materials WHERE id = ?", (material_id,)).fetchone()
+    
     if not mat:
+        conn.close()
         flash("Material not found.", "danger")
         return redirect(url_for("home"))
         
+    cards = conn.execute("SELECT front, back FROM flashcards WHERE material_id = ?", (material_id,)).fetchall()
+    
+    # Self-heal check: if no flashcards exist, try to generate them on the fly
+    if not cards:
+        logger.info(f"No flashcards found for material {material_id}. Generating on the fly...")
+        try:
+            generated_cards = generate_flashcards(mat["extracted_text"])
+            for card in generated_cards:
+                conn.execute("""
+                    INSERT INTO flashcards (material_id, front, back)
+                    VALUES (?, ?, ?)
+                """, (material_id, card.get("front", "No Question"), card.get("back", "No Answer")))
+            conn.commit()
+            # Re-fetch cards
+            cards = conn.execute("SELECT front, back FROM flashcards WHERE material_id = ?", (material_id,)).fetchall()
+            if cards:
+                flash("Flashcards generated successfully!", "success")
+        except Exception as e:
+            logger.error(f"Failed to generate flashcards on the fly: {e}")
+            flash("Flashcards could not be generated at this moment. Groq API might be experiencing high traffic.", "warning")
+
+    conn.close()
     cards_list = [dict(c) for c in cards]
     return render_template("flashcards.html", filename=mat["filename"], cards=cards_list)
 
@@ -813,9 +885,9 @@ def leaderboard():
     # Append mock ranks to look like a true competitive SaaS leader board
     if len(ranks) < 4:
         mock_students = [
-            {"rank": len(ranks)+1, "username": "Alex Rivera", "quizzes_taken": 12, "avg_score": 92.5, "improvement": 15.0},
-            {"rank": len(ranks)+2, "username": "Sofia Chen", "quizzes_taken": 10, "avg_score": 88.2, "improvement": 12.4},
-            {"rank": len(ranks)+3, "username": "Marcus Vance", "quizzes_taken": 8, "avg_score": 81.0, "improvement": 9.5}
+            {"rank": len(ranks)+1, "username": "Sahana M", "quizzes_taken": 12, "avg_score": 92.5, "improvement": 15.0},
+            {"rank": len(ranks)+2, "username": "Sneha S", "quizzes_taken": 10, "avg_score": 88.2, "improvement": 12.4},
+            {"rank": len(ranks)+3, "username": "Sahana H C", "quizzes_taken": 8, "avg_score": 81.0, "improvement": 9.5}
         ]
         ranks.extend(mock_students)
         ranks.sort(key=lambda x: x["avg_score"], reverse=True)
@@ -1047,17 +1119,14 @@ def research_ask():
         return jsonify({"error": "No study materials found. Upload a PDF first."}), 400
 
     try:
-        client = get_groq_client()
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[
-                {"role": "system", "content": "You are an expert academic tutor. Answer the student's question based on their study materials. Be thorough, use examples, and format your response with clear sections."},
-                {"role": "user", "content": f"Study Material Context:\n{context}\n\nStudent Question: {question}"}
-            ],
+        system_prompt = "You are an expert academic tutor. Answer the student's question based on their study materials. Be thorough, use examples, and format your response with clear sections."
+        user_prompt = f"Study Material Context:\n{context}\n\nStudent Question: {question}"
+        answer = call_groq_with_fallback(
+            prompt=user_prompt,
+            system_prompt=system_prompt,
             temperature=0.4,
-            max_tokens=2000,
+            max_tokens=2000
         )
-        answer = response.choices[0].message.content
         return jsonify({"answer": answer, "source": source})
     except Exception as e:
         logger.error(f"Research lab AI error: {e}")

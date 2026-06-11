@@ -4,7 +4,7 @@
     <style>
         .gpa-ring {
             width: 200px; height: 200px; border-radius: 50%;
-            background: conic-gradient(#2563eb {{ ((predicted_gpa|default(0)) / 10 * 360)|int }}deg, rgba(255,255,255,0.1) 0deg);
+            background: conic-gradient(#2563eb {{ ((predicted_gpa|default(0)) / 10 * 360)|int }}deg, var(--ring-bg) 0deg);
             display: flex; align-items: center; justify-content: center;
             margin: 0 auto; position: relative;
         }

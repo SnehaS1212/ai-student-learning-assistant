@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 {% block title %}EduAI Nexus — Intelligent Learning Ecosystem{% endblock %}
+{% block extra_head %}
+    <!-- Load PDF.js for browser-side text extraction on large files to bypass serverless constraints -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+{% endblock %}
 {% block content %}
 
         <div class="container-fluid">
@@ -50,32 +54,29 @@
                     
                     <!-- Upload Study Materials Card -->
                     <div class="glass-card mb-4">
-                        <h4 class="mb-3"><i class="bi bi-cloud-arrow-up text-primary me-2"></i>Module Document Ingestion</h4>
+                        <h4 class="mb-3"><i class="bi bi-cloud-arrow-up text-primary me-2"></i>Upload Materials</h4>
                         <form id="pdfUploadForm" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
-                            <!-- Hidden inputs outside dropzone to prevent bubble event loop -->
-                            <input type="file" name="pdf" id="pdfFileInput" multiple style="display: none;">
-                            <input type="file" name="pdf" id="folderFileInput" webkitdirectory directory multiple style="display: none;">
+                            <!-- Accessible offscreen inputs to prevent programmatic click blocks in mobile browsers -->
+                            <input type="file" name="pdf" id="pdfFileInput" multiple accept=".pdf,.txt,.docx,.doc,.png,.jpg,.jpeg,.md" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">
+                            <input type="file" name="pdf" id="folderFileInput" webkitdirectory directory multiple style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">
 
-                            <div class="upload-dropzone" id="dropzoneContainer" style="position: relative;">
+                            <label class="upload-dropzone w-100 d-block mb-0" id="dropzoneContainer" for="pdfFileInput" style="position: relative; cursor: pointer;">
                                 <div class="upload-dropzone-icon">
                                     <i class="bi bi-cloud-arrow-up text-primary"></i>
                                 </div>
                                 <h5>Drag & Drop Files or Folders</h5>
                                 <p class="text-muted fs-7 mb-3">Supports PDF, Word, TXT, MD, PNG, JPG up to 32 MB</p>
                                 <div class="d-flex justify-content-center gap-2 mb-1" style="position: relative; z-index: 15;">
-                                    <button type="button" class="btn btn-sm btn-premium py-1 px-3" id="selectFilesBtn">
-                                        <i class="bi bi-files"></i> Choose Files
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-premium py-1 px-3" id="selectFolderBtn">
-                                        <i class="bi bi-folder-plus"></i> Choose Folder
-                                    </button>
+                                    <span class="btn btn-sm btn-premium py-1 px-3" id="selectFilesBtn">
+                                        <i class="bi bi-folder-plus"></i> Browse Files
+                                    </span>
                                 </div>
-                            </div>
+                            </label>
                             <div class="file-name-display" id="selectedFileName">
                                 <i class="bi bi-file-earmark-arrow-up-fill"></i> <span id="fileTextName"></span>
                             </div>
                             <button type="submit" class="btn-premium w-100 mt-3" id="uploadSubmitBtn" disabled>
-                                Parse Module Ingestion <i class="bi bi-cpu"></i>
+                                Upload & Process <i class="bi bi-cpu"></i>
                             </button>
                         </form>
                     </div>
@@ -215,24 +216,9 @@
         const uploadSubmitBtn = document.getElementById('uploadSubmitBtn');
         const dropzone = document.getElementById('dropzoneContainer');
         const selectFilesBtn = document.getElementById('selectFilesBtn');
-        const selectFolderBtn = document.getElementById('selectFolderBtn');
 
         if (dropzone && pdfFileInput && folderFileInput) {
             logDebug('File and folder upload elements successfully initialized');
-
-            // Wire buttons
-            if (selectFilesBtn) {
-                selectFilesBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    pdfFileInput.click();
-                });
-            }
-            if (selectFolderBtn) {
-                selectFolderBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    folderFileInput.click();
-                });
-            }
 
             // Prevent default drag behaviors
             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -313,15 +299,6 @@
                     pdfFileInput.dispatchEvent(event);
                 }
             }, false);
-
-            // Click delegator for robustness
-            dropzone.addEventListener('click', function(e) {
-                if (e.target.closest('#selectFilesBtn') || e.target.closest('#selectFolderBtn')) {
-                    return;
-                }
-                logDebug('Dropzone clicked, default to Select Files');
-                pdfFileInput.click();
-            });
         } else {
             logDebug('WARNING: File upload, folder upload, or dropzone elements missing in DOM!');
         }
@@ -335,13 +312,12 @@
                     totalSize += files[i].size;
                 }
 
-                // Check Vercel serverless limit of 4.5MB (4.5 * 1024 * 1024 = 4718592 bytes)
+                // Allow uploading up to 100MB on all platforms
                 const isVercel = window.location.hostname.includes('vercel.app');
-                const maxSizeLimit = isVercel ? 4.5 * 1024 * 1024 : 32 * 1024 * 1024;
+                const maxSizeLimit = 100 * 1024 * 1024; // 100 MB
                 
                 if (totalSize > maxSizeLimit) {
-                    const limitStr = isVercel ? '4.5 MB (Vercel Serverless limit)' : '32 MB';
-                    alert(`The selected file(s) total size is ${(totalSize / (1024 * 1024)).toFixed(2)} MB. The maximum allowed upload size on this environment is ${limitStr}.\n\nPlease select a smaller file.`);
+                    alert(`The selected file(s) total size is ${(totalSize / (1024 * 1024)).toFixed(2)} MB. The maximum allowed upload size is 100 MB.\n\nPlease select smaller file(s).`);
                     
                     // Reset inputs
                     if (pdfFileInput) pdfFileInput.value = '';
@@ -350,6 +326,10 @@
                     if (selectedFileName) selectedFileName.style.display = 'none';
                     if (uploadSubmitBtn) uploadSubmitBtn.disabled = true;
                     return;
+                }
+
+                if (isVercel && totalSize > 4.5 * 1024 * 1024) {
+                    console.warn("Uploading files larger than 4.5 MB on Vercel free tier serverless might get rejected by Vercel's gateway limits.");
                 }
 
                 let nameText = '';
@@ -385,53 +365,112 @@
             });
         }
 
+        // Configure PDF.js worker
+        if (window.pdfjsLib) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+        }
+
+        async function extractTextFromPDF(file) {
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                let fullText = "";
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(" ");
+                    fullText += pageText + "\n";
+                }
+                return fullText;
+            } catch (err) {
+                console.error("PDF.js extraction error:", err);
+                throw new Error("Failed to parse PDF document structure. Make sure the file is not corrupted.");
+            }
+        }
+
         const uploadForm = document.getElementById('pdfUploadForm');
         if (uploadForm) {
-            uploadForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                logDebug('Form submitted via Fetch API. Activating loader overlay...');
-                const loader = document.getElementById('loaderOverlay');
-                if (loader) loader.classList.add('active');
+            uploadForm.addEventListener('submit', async function(e) {
+                let filesCount = 0;
+                if (pdfFileInput && pdfFileInput.files) filesCount += pdfFileInput.files.length;
+                if (folderFileInput && folderFileInput.files) filesCount += folderFileInput.files.length;
 
-                const formData = new FormData();
-                
-                let fileSourceInput = null;
-                if (pdfFileInput && pdfFileInput.files.length > 0) {
-                    fileSourceInput = pdfFileInput;
-                } else if (folderFileInput && folderFileInput.files.length > 0) {
-                    fileSourceInput = folderFileInput;
-                }
-
-                if (!fileSourceInput || fileSourceInput.files.length === 0) {
+                if (filesCount === 0) {
+                    e.preventDefault();
                     alert('Please select a file first.');
-                    if (loader) loader.classList.remove('active');
                     return;
                 }
 
-                for (let i = 0; i < fileSourceInput.files.length; i++) {
-                    formData.append('pdf', fileSourceInput.files[i]);
+                // If on Vercel and file is larger than 4.5MB, check if we can optimize it
+                const isVercel = window.location.hostname.includes('vercel.app');
+                
+                let totalSize = 0;
+                const filesToProcess = [];
+                if (pdfFileInput && pdfFileInput.files) {
+                    for (let i = 0; i < pdfFileInput.files.length; i++) {
+                        const file = pdfFileInput.files[i];
+                        totalSize += file.size;
+                        filesToProcess.push(file);
+                    }
                 }
 
-                try {
-                    const response = await fetch('/upload', {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    if (response.ok) {
-                        logDebug('Upload succeeded. Redirecting to home...');
-                        window.location.href = '/';
-                    } else {
-                        const errorMsg = await response.text();
-                        console.error('Server returned error status:', response.status, errorMsg);
-                        alert(`Upload failed: Server error ${response.status}.\n\nIf the file is too large or invalid, please choose another file.`);
-                        if (loader) loader.classList.remove('active');
+                if (isVercel && totalSize > 4.5 * 1024 * 1024) {
+                    // Prevent immediate submit to allow async text extraction
+                    e.preventDefault();
+                    
+                    logDebug('Large file upload detected on Vercel. Activating browser text extraction...');
+                    const loader = document.getElementById('loaderOverlay');
+                    if (loader) {
+                        loader.querySelector('h4').textContent = 'Extracting Text...';
+                        loader.querySelector('p').textContent = 'Extracting plain text from your PDF directly in the browser to bypass Vercel serverless limits.';
+                        loader.classList.add('active');
                     }
-                } catch (err) {
-                    console.error('Network or fetch error:', err);
-                    alert(`Upload failed: ${err.message || err}\n\nTip: On mobile devices, files chosen from "Recent" or "Downloads" can trigger permission errors in the browser. Please try selecting the file directly from your phone's native "File Manager" or "Internal Storage".`);
-                    if (loader) loader.classList.remove('active');
+
+                    try {
+                        const dataTransfer = new DataTransfer();
+                        
+                        for (let file of filesToProcess) {
+                            const ext = file.name.split('.').pop().toLowerCase();
+                            if (ext === 'pdf' && file.size > 4.5 * 1024 * 1024) {
+                                logDebug('Extracting text from PDF: ' + file.name);
+                                const text = await extractTextFromPDF(file);
+                                if (!text || text.trim().length === 0) {
+                                    const proceed = confirm(`The PDF file '${file.name}' appears to be a scanned document (no selectable text layer).\n\nBrowser-side text extraction cannot optimize it. Uploading the original large file might fail on Vercel due to the 4.5 MB serverless limit.\n\nWould you like to try uploading the original file anyway?`);
+                                    if (!proceed) {
+                                        throw new Error(`Upload of '${file.name}' cancelled because it is a scanned document and exceeds Vercel limits.`);
+                                    }
+                                    dataTransfer.items.add(file);
+                                } else {
+                                    // Create a lightweight text File object representing the plain text
+                                    const textFile = new File([text], file.name.replace(/\.pdf$/i, '') + '.txt', { type: 'text/plain' });
+                                    dataTransfer.items.add(textFile);
+                                }
+                            } else if (file.size > 4.5 * 1024 * 1024) {
+                                // Non-PDF files larger than 4.5MB cannot be optimized in-browser and will fail on Vercel
+                                throw new Error(`The file '${file.name}' is ${(file.size / (1024 * 1024)).toFixed(2)} MB. Vercel Serverless hosting restricts uploads to 4.5 MB. Please upload a smaller file or run the application locally.`);
+                            } else {
+                                dataTransfer.items.add(file);
+                            }
+                        }
+
+                        // Swap original files with lightweight text files
+                        pdfFileInput.files = dataTransfer.files;
+                        logDebug('Files successfully optimized for Vercel, submitting...');
+                        
+                        // Submit form programmatically (bypasses submit event listener, avoiding loop)
+                        uploadForm.submit();
+
+                    } catch (err) {
+                        console.error('Browser-side processing failed:', err);
+                        alert(`Vercel Upload Limit Optimization Failed:\n\n${err.message || err}\n\nTip: For scanned/non-searchable PDFs or files above 4.5 MB, please run the application locally or compress your files.`);
+                        if (loader) {
+                            loader.querySelector('h4').textContent = 'Processing...';
+                            loader.querySelector('p').textContent = 'Please wait while EduAI performs the operation.';
+                            loader.classList.remove('active');
+                        }
+                    }
+                } else {
+                    logDebug('Form submitted natively.');
                 }
             });
         }

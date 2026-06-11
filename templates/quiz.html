@@ -8,6 +8,17 @@
             <p class="text-muted"><i class="bi bi-file-earmark-text"></i> Source: {{ filename }}</p>
         </div>
 
+        <!-- Progress Tracker Card -->
+        <div class="glass-card mb-4 p-3 d-flex flex-column gap-2">
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="fs-7 fw-bold"><i class="bi bi-patch-question-fill text-primary"></i> Progress Tracker</span>
+                <span class="fs-7 text-muted fw-bold"><span id="answeredIndex">0</span> / {{ total }} Answered</span>
+            </div>
+            <div class="progress" style="height: 8px; background-color: var(--ring-bg); border-radius: 4px; overflow: hidden;">
+                <div class="progress-bar bg-primary" id="quizProgressBar" role="progressbar" style="width: 0%; transition: width 0.3s ease;"></div>
+            </div>
+        </div>
+
         <form action="{{ url_for('quiz_submit') }}" method="POST" id="activeQuizForm">
             {% for index, item in quiz %}
                 <div class="glass-card mb-4 p-4">
@@ -42,19 +53,6 @@
 
 {% block scripts %}
 <script>
-        // ---- Theme Manager ----
-        const toggleBtn = document.getElementById('themeToggleBtn');
-        const applyTheme = (theme) => {
-            document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-            toggleBtn.innerHTML = theme === 'dark' ? '<i class="bi bi-sun-fill text-warning"></i>' : '<i class="bi bi-moon-stars"></i>';
-        };
-        applyTheme(localStorage.getItem('theme') || 'light');
-        toggleBtn.addEventListener('click', () => {
-            const nextTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            applyTheme(nextTheme);
-        });
-
         // ---- Answer Tracker & Progress ----
         const totalItems = {{ total }};
         const radios = document.querySelectorAll('.quiz-option-radio');

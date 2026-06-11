@@ -70,13 +70,21 @@
 }
 
 body {
-    background: var(--bg-app);
+    background: radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.05), transparent 45%),
+                radial-gradient(circle at 15% 85%, rgba(139, 92, 246, 0.05), transparent 45%),
+                var(--bg-app);
     color: var(--text-main);
     font-family: var(--font-body);
     min-height: 100vh;
     transition: background var(--transition), color var(--transition);
     -webkit-font-smoothing: antialiased;
     display: flex;
+}
+
+[data-theme="dark"] body {
+    background: radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.08), transparent 45%),
+                radial-gradient(circle at 15% 85%, rgba(139, 92, 246, 0.08), transparent 45%),
+                var(--bg-app);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -212,8 +220,32 @@ h1, h2, h3, h4, h5, h6 {
     }
     .main-workspace {
         margin-left: 0;
-        padding: 1rem;
+        padding: 1.5rem;
         padding-top: 80px; /* Space for mobile topbar */
+    }
+}
+
+@media (max-width: 768px) {
+    .main-workspace {
+        padding: 1.25rem;
+        padding-top: 75px;
+    }
+    h1.display-5, .display-5 {
+        font-size: 2rem !important;
+    }
+    h1.display-6, .display-6 {
+        font-size: 1.75rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .main-workspace {
+        padding: 0.75rem;
+        padding-top: 75px;
+    }
+    .btn-premium {
+        padding: 0.6rem 1.25rem;
+        font-size: 0.9rem;
     }
 }
 
@@ -351,22 +383,30 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ---------- Glassmorphism Card Style ---------- */
 .glass-card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: var(--radius-lg);
     box-shadow: var(--card-shadow);
     padding: 1.75rem;
     transition: var(--transition);
     overflow: hidden;
 }
+[data-theme="dark"] .glass-card {
+    background: rgba(17, 24, 39, 0.45);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
 .glass-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
-    border-color: var(--primary-light);
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+    border-color: rgba(37, 99, 235, 0.35);
 }
 [data-theme="dark"] .glass-card:hover {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
-    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.18);
 }
 
 /* ---------- Ebbinghaus alerts & Topic Hierarchies ---------- */
@@ -627,10 +667,13 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 4px 14px rgba(37, 99, 235, 0.2);
 }
 .btn-premium:hover {
-    opacity: 0.92;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.3);
+    opacity: 0.95;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
     color: #ffffff;
+}
+.btn-premium:active {
+    transform: translateY(0) scale(0.98);
 }
 
 .btn-premium-outline {
@@ -651,6 +694,11 @@ h1, h2, h3, h4, h5, h6 {
     background: var(--primary-light);
     border-color: var(--primary);
     color: var(--primary);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 14px rgba(37, 99, 235, 0.10);
+}
+.btn-premium-outline:active {
+    transform: translateY(0) scale(0.98);
 }
 
 /* File Dropzone */

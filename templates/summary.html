@@ -63,19 +63,6 @@
 
 {% block scripts %}
 <script>
-        // ---- Theme Manager ----
-        const toggleBtn = document.getElementById('themeToggleBtn');
-        const applyTheme = (theme) => {
-            document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-            toggleBtn.innerHTML = theme === 'dark' ? '<i class="bi bi-sun-fill text-warning"></i>' : '<i class="bi bi-moon-stars"></i>';
-        };
-        applyTheme(localStorage.getItem('theme') || 'light');
-        toggleBtn.addEventListener('click', () => {
-            const nextTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            applyTheme(nextTheme);
-        });
-
         // ---- Custom Switch Tabs ----
         function switchTab(evt, tabId) {
             // Remove active classes
