@@ -387,25 +387,52 @@
 
         const uploadForm = document.getElementById('pdfUploadForm');
         if (uploadForm) {
-            uploadForm.addEventListener('submit', () => {
-                logDebug('Form submitted. Activating loader overlay...');
+            uploadForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
                 
-                // Disable the unused input to prevent submission of empty fields of same name (causes Chrome ERR_UPLOAD_FILE_CHANGED)
-                if (pdfFileInput && pdfFileInput.files.length === 0) {
-                    pdfFileInput.disabled = true;
-                }
-                if (folderFileInput && folderFileInput.files.length === 0) {
-                    folderFileInput.disabled = true;
-                }
-
+                logDebug('Form submitted via Fetch API. Activating loader overlay...');
                 const loader = document.getElementById('loaderOverlay');
                 if (loader) loader.classList.add('active');
 
-                // Re-enable after a short timeout so that if form fails locally, UI remains functional
-                setTimeout(() => {
-                    if (pdfFileInput) pdfFileInput.disabled = false;
-                    if (folderFileInput) folderFileInput.disabled = false;
-                }, 100);
+                const formData = new FormData();
+                
+                let fileSourceInput = null;
+                if (pdfFileInput && pdfFileInput.files.length > 0) {
+                    fileSourceInput = pdfFileInput;
+                } else if (folderFileInput && folderFileInput.files.length > 0) {
+                    fileSourceInput = folderFileInput;
+                }
+
+                if (!fileSourceInput || fileSourceInput.files.length === 0) {
+                    alert('Please select a file first.');
+                    if (loader) loader.classList.remove('active');
+                    return;
+                }
+
+                for (let i = 0; i < fileSourceInput.files.length; i++) {
+                    formData.append('pdf', fileSourceInput.files[i]);
+                }
+
+                try {
+                    const response = await fetch('/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        logDebug('Upload succeeded. Redirecting to home...');
+                        window.location.href = '/';
+                    } else {
+                        const errorMsg = await response.text();
+                        console.error('Server returned error status:', response.status, errorMsg);
+                        alert(`Upload failed: Server error ${response.status}.\n\nIf the file is too large or invalid, please choose another file.`);
+                        if (loader) loader.classList.remove('active');
+                    }
+                } catch (err) {
+                    console.error('Network or fetch error:', err);
+                    alert(`Upload failed: ${err.message || err}\n\nTip: On mobile devices, files chosen from "Recent" or "Downloads" can trigger permission errors in the browser. Please try selecting the file directly from your phone's native "File Manager" or "Internal Storage".`);
+                    if (loader) loader.classList.remove('active');
+                }
             });
         }
 
