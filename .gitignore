@@ -3,3 +3,5 @@ __pycache__/
 uploads/
 database.db
 .env
+.git.zip
+*.zip

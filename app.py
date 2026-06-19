@@ -25,10 +25,7 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "eduai-pro-secret-key-99881122")
 
-if os.environ.get("VERCEL"):
-    UPLOAD_FOLDER = "/tmp"
-else:
-    UPLOAD_FOLDER = "uploads"
+UPLOAD_FOLDER = "uploads"
 
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
@@ -113,12 +110,7 @@ class DatabaseConnectionWrapper:
         cur.execute(query, params)
         return cur
 
-if os.environ.get("PERSISTENT_DB_PATH"):
-    DATABASE = os.environ.get("PERSISTENT_DB_PATH")
-elif os.environ.get("VERCEL"):
-    DATABASE = "/tmp/database.db"
-else:
-    DATABASE = "database.db"
+DATABASE = "database.db"
 
 def get_db_connection():
     db_url = os.environ.get("DATABASE_URL") or os.environ.get("POSTGRES_URL")

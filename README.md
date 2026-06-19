@@ -11,7 +11,7 @@
 
 **An intelligent, AI-powered web application that transforms your study materials into interactive learning experiences — summaries, flashcards, quizzes, study plans, and more.**
 
-[🌐 Live Demo](https://ai-student-learning-assistant.vercel.app) · [🐛 Report Bug](https://github.com/AnujKumarC/ai-student-learning-assistant/issues) · [✨ Request Feature](https://github.com/AnujKumarC/ai-student-learning-assistant/issues)
+[🐛 Report Bug](https://github.com/sneha-s2005/ai-student-learning-assistant/issues) · [✨ Request Feature](https://github.com/sneha-s2005/ai-student-learning-assistant/issues)
 
 </div>
 
@@ -85,10 +85,6 @@ The **AI Student Learning Assistant** is a full-stack Flask web application that
 - **HTML5 / CSS3 / Vanilla JavaScript** — Clean, responsive UI
 - **Jinja2** — Server-side templating
 
-### Infrastructure
-- **[Vercel](https://vercel.com/)** — Serverless deployment
-- **[Render](https://render.com/)** — Full-featured deployment with persistent storage
-
 ---
 
 
@@ -104,7 +100,7 @@ The **AI Student Learning Assistant** is a full-stack Flask web application that
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/AnujKumarC/ai-student-learning-assistant.git
+   git clone https://github.com/sneha-s2005/ai-student-learning-assistant.git
    cd ai-student-learning-assistant
    ```
 
@@ -137,9 +133,6 @@ FLASK_SECRET_KEY=your_secret_key_here
 
 # Optional: PostgreSQL connection URL (SQLite used by default)
 # DATABASE_URL=postgresql://user:password@host:5432/dbname
-
-# Optional: Persistent DB path for non-serverless environments
-# PERSISTENT_DB_PATH=/path/to/database.db
 ```
 
 > ⚠️ **Never commit your `.env` file.** It is already in `.gitignore`.
@@ -161,9 +154,6 @@ ai-student-learning-assistant/
 │
 ├── app.py                  # Main Flask application (routes, AI calls, DB logic)
 ├── requirements.txt        # Python dependencies
-├── render.yaml             # Render deployment blueprint
-├── vercel.json             # Vercel serverless configuration
-├── .vercelignore           # Files to exclude from Vercel deployment
 ├── .gitignore              # Git exclusions
 │
 ├── templates/              # Jinja2 HTML templates
