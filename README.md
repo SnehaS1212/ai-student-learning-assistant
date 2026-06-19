@@ -22,16 +22,12 @@
 - [Overview](#-overview)
 - [Features](#-features)
 - [Tech Stack](#-tech-stack)
-- [Screenshots](#-screenshots)
 - [Getting Started](#-getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
   - [Environment Variables](#environment-variables)
   - [Running Locally](#running-locally)
 - [Project Structure](#-project-structure)
-- [Deployment](#-deployment)
-  - [Vercel](#vercel)
-  - [Render](#render)
 - [API Reference](#-api-reference)
 - [Contributing](#-contributing)
 - [License](#-license)
@@ -95,23 +91,6 @@ The **AI Student Learning Assistant** is a full-stack Flask web application that
 
 ---
 
-## 📸 Screenshots
-
-> Upload your study material and let AI do the rest!
-
-### 🏠 Dashboard
-The main dashboard shows uploaded materials, quiz history, performance statistics, and quick-action buttons.
-
-### 📝 Summaries
-AI generates four distinct summaries for every uploaded file — from a detailed conceptual breakdown to a one-page cheat sheet.
-
-### 🃏 Flashcards
-Interactive flip-card player built from AI-extracted key concepts from your notes.
-
-### 📊 Quiz Results
-After completing a quiz, view your score, weak topics, personalized study plans, and tutor feedback for every missed question.
-
----
 
 ## 🚀 Getting Started
 
@@ -208,31 +187,6 @@ ai-student-learning-assistant/
 ├── uploads/                # Uploaded files (git-ignored)
 └── database.db             # SQLite database (git-ignored)
 ```
-
----
-
-## ☁️ Deployment
-
-### Vercel
-
-This project is pre-configured for **serverless deployment on Vercel**.
-
-1. Install the Vercel CLI: `npm i -g vercel`
-2. Run `vercel` in the project root and follow the prompts
-3. Set your environment variables in the **Vercel dashboard → Settings → Environment Variables**:
-   - `GROQ_API_KEY`
-   - `FLASK_SECRET_KEY`
-
-> **Note:** Vercel uses `/tmp` for file uploads and database storage. For persistent data across deployments, set a `DATABASE_URL` pointing to a PostgreSQL instance (e.g., Neon, Supabase, Railway).
-
-### Render
-
-A `render.yaml` blueprint is included for easy deployment on Render.
-
-1. Push your code to GitHub
-2. Connect your repository on [Render.com](https://render.com)
-3. Render will auto-detect `render.yaml` and configure the service
-4. Set environment variables in the Render dashboard
 
 ---
 
