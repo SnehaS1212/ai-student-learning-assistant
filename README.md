@@ -274,7 +274,7 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 
 <div align="center">
 
-Made with ❤️ by **[Anuj Kumar C](https://github.com/AnujKumarC)**
+Made with ❤️ by **[Sneha S](https://github.com/sneha-s2005)**
 
 ⭐ Star this repo if you found it helpful!
 
