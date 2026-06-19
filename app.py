@@ -53,6 +53,66 @@ def get_groq_client():
 # ==========================================================================
 # DATABASE SCHEMAS & UTILITIES
 # ==========================================================================
+class DatabaseCursorWrapper:
+    def __init__(self, cursor, is_postgres=False):
+        self.cursor = cursor
+        self.is_postgres = is_postgres
+
+    def execute(self, query, params=None):
+        if self.is_postgres and params is not None:
+            query = query.replace('?', '%s')
+        
+        if params is not None:
+            self.cursor.execute(query, params)
+        else:
+            self.cursor.execute(query)
+        return self
+
+    def fetchone(self):
+        return self.cursor.fetchone()
+
+    def fetchall(self):
+        return self.cursor.fetchall()
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        res = self.cursor.fetchone()
+        if res is None:
+            raise StopIteration
+        return res
+
+    @property
+    def lastrowid(self):
+        if self.is_postgres:
+            self.cursor.execute("SELECT lastval()")
+            return self.cursor.fetchone()[0]
+        else:
+            return self.cursor.lastrowid
+
+class DatabaseConnectionWrapper:
+    def __init__(self, conn, is_postgres=False):
+        self.conn = conn
+        self.is_postgres = is_postgres
+
+    def cursor(self):
+        return DatabaseCursorWrapper(self.conn.cursor(), self.is_postgres)
+
+    def commit(self):
+        self.conn.commit()
+
+    def rollback(self):
+        self.conn.rollback()
+
+    def close(self):
+        self.conn.close()
+
+    def execute(self, query, params=None):
+        cur = self.cursor()
+        cur.execute(query, params)
+        return cur
+
 if os.environ.get("PERSISTENT_DB_PATH"):
     DATABASE = os.environ.get("PERSISTENT_DB_PATH")
 elif os.environ.get("VERCEL"):
@@ -61,69 +121,125 @@ else:
     DATABASE = "database.db"
 
 def get_db_connection():
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
-    return conn
+    db_url = os.environ.get("DATABASE_URL") or os.environ.get("POSTGRES_URL")
+    if db_url:
+        import psycopg2
+        import psycopg2.extras
+        if db_url.startswith("postgres://"):
+            db_url = db_url.replace("postgres://", "postgresql://", 1)
+        conn = psycopg2.connect(db_url, cursor_factory=psycopg2.extras.DictCursor)
+        return DatabaseConnectionWrapper(conn, is_postgres=True)
+    else:
+        conn = sqlite3.connect(DATABASE)
+        conn.row_factory = sqlite3.Row
+        return DatabaseConnectionWrapper(conn, is_postgres=False)
 
 def init_db():
+    db_url = os.environ.get("DATABASE_URL") or os.environ.get("POSTGRES_URL")
+    is_postgres = bool(db_url)
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # Materials table (stores PDFs and their extracted text, summary formats)
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS materials (
-                id              INTEGER PRIMARY KEY AUTOINCREMENT,
-                filename        TEXT NOT NULL,
-                filepath        TEXT NOT NULL,
-                extracted_text  TEXT NOT NULL,
-                summary_detailed TEXT,
-                summary_short   TEXT,
-                summary_revision TEXT,
-                summary_onepage  TEXT,
-                created_at      DATETIME DEFAULT CURRENT_TIMESTAMP
-            )
-        """)
-        
-        # Flashcards table
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS flashcards (
-                id          INTEGER PRIMARY KEY AUTOINCREMENT,
-                material_id INTEGER NOT NULL,
-                front       TEXT NOT NULL,
-                back        TEXT NOT NULL,
-                FOREIGN KEY(material_id) REFERENCES materials(id) ON DELETE CASCADE
-            )
-        """)
-        
-        # Quiz Results / Performance analytics table
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS quiz_results (
-                id              INTEGER PRIMARY KEY AUTOINCREMENT,
-                username        TEXT NOT NULL,
-                filename        TEXT NOT NULL,
-                topic           TEXT NOT NULL,
-                difficulty      TEXT NOT NULL,
-                score           INTEGER NOT NULL,
-                total           INTEGER NOT NULL,
-                percentage      REAL NOT NULL,
-                weak_topics     TEXT, -- JSON payload of weak topics
-                study_plan_1d   TEXT, -- JSON payload
-                study_plan_3d   TEXT, -- JSON payload
-                study_plan_7d   TEXT, -- JSON payload
-                readiness_score INTEGER,
-                confidence      TEXT,
-                tutor_feedback  TEXT, -- JSON payload explanation mapping
-                timestamp       DATETIME DEFAULT CURRENT_TIMESTAMP
-            )
-        """)
-        
-        # Migrate any 'Student' records to 'Maria John'
-        cursor.execute("UPDATE quiz_results SET username = 'Maria John' WHERE username = 'Student'")
+        if is_postgres:
+            # PostgreSQL syntax
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS materials (
+                    id              SERIAL PRIMARY KEY,
+                    filename        VARCHAR(255) NOT NULL,
+                    filepath        VARCHAR(255) NOT NULL,
+                    extracted_text  TEXT NOT NULL,
+                    summary_detailed TEXT,
+                    summary_short   TEXT,
+                    summary_revision TEXT,
+                    summary_onepage  TEXT,
+                    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+            
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS flashcards (
+                    id          SERIAL PRIMARY KEY,
+                    material_id INTEGER NOT NULL,
+                    front       TEXT NOT NULL,
+                    back        TEXT NOT NULL,
+                    FOREIGN KEY(material_id) REFERENCES materials(id) ON DELETE CASCADE
+                )
+            """)
+            
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS quiz_results (
+                    id              SERIAL PRIMARY KEY,
+                    username        VARCHAR(255) NOT NULL,
+                    filename        VARCHAR(255) NOT NULL,
+                    topic           VARCHAR(255) NOT NULL,
+                    difficulty      VARCHAR(50) NOT NULL,
+                    score           INTEGER NOT NULL,
+                    total           INTEGER NOT NULL,
+                    percentage      REAL NOT NULL,
+                    weak_topics     TEXT,
+                    study_plan_1d   TEXT,
+                    study_plan_3d   TEXT,
+                    study_plan_7d   TEXT,
+                    readiness_score INTEGER,
+                    confidence      VARCHAR(50),
+                    tutor_feedback  TEXT,
+                    timestamp       TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+        else:
+            # SQLite syntax
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS materials (
+                    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+                    filename        TEXT NOT NULL,
+                    filepath        TEXT NOT NULL,
+                    extracted_text  TEXT NOT NULL,
+                    summary_detailed TEXT,
+                    summary_short   TEXT,
+                    summary_revision TEXT,
+                    summary_onepage  TEXT,
+                    created_at      DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+            
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS flashcards (
+                    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                    material_id INTEGER NOT NULL,
+                    front       TEXT NOT NULL,
+                    back        TEXT NOT NULL,
+                    FOREIGN KEY(material_id) REFERENCES materials(id) ON DELETE CASCADE
+                )
+            """)
+            
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS quiz_results (
+                    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username        TEXT NOT NULL,
+                    filename        TEXT NOT NULL,
+                    topic           TEXT NOT NULL,
+                    difficulty      TEXT NOT NULL,
+                    score           INTEGER NOT NULL,
+                    total           INTEGER NOT NULL,
+                    percentage      REAL NOT NULL,
+                    weak_topics     TEXT,
+                    study_plan_1d   TEXT,
+                    study_plan_3d   TEXT,
+                    study_plan_7d   TEXT,
+                    readiness_score INTEGER,
+                    confidence      TEXT,
+                    tutor_feedback  TEXT,
+                    timestamp       DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+            
+        # Migrate any 'Student' or 'Steve' records to 'Maria John'
+        cursor.execute("UPDATE quiz_results SET username = 'Maria John' WHERE username IN ('Student', 'Steve')")
         
         conn.commit()
         conn.close()
-        logger.info("EduAI Pro Database Tables initialized and records migrated successfully.")
+        logger.info("Database Tables initialized and records migrated successfully.")
     except Exception as e:
         logger.error(f"Failed to initialize database: {e}")
         raise
@@ -484,7 +600,7 @@ Make sure the keys in 'tutor_feedback' correspond to the question index (e.g., "
 def home():
     """Portal Dashboard listing uploaded files, quiz analytics charts, and historical summary logs."""
     # Ensure a default username exists in session to simulate user logins
-    if "username" not in session or session["username"] == "Student":
+    if "username" not in session or session["username"] in ("Student", "Steve"):
         session["username"] = "Maria John"
 
     conn = get_db_connection()
@@ -948,7 +1064,7 @@ def clear_history():
 @app.route("/api/analytics")
 def api_analytics():
     """Retrieve raw historical statistics to draw charts on dashboard."""
-    username = session.get("username", "Student")
+    username = session.get("username", "Maria John")
     conn = get_db_connection()
     records = conn.execute("""
         SELECT percentage, readiness_score, timestamp, difficulty, filename
@@ -1004,7 +1120,7 @@ def flashcards_spaced():
 @app.route("/gpa-predictor")
 def semester_predictor():
     """GPA prediction tool based on quiz performance data."""
-    username = session.get("username", "Student")
+    username = session.get("username", "Maria John")
     conn = get_db_connection()
     records = conn.execute("""
         SELECT filename, topic, difficulty, score, total, percentage, readiness_score, timestamp
@@ -1040,7 +1156,7 @@ def semester_predictor():
 @app.route("/career-navigator")
 def career_navigator():
     """Career readiness assessment based on learning profile."""
-    username = session.get("username", "Student")
+    username = session.get("username", "Maria John")
     conn = get_db_connection()
     records = conn.execute("""
         SELECT filename, topic, difficulty, percentage, readiness_score, weak_topics
