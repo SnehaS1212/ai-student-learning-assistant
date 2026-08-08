@@ -226,8 +226,8 @@ def init_db():
                 )
             """)
             
-        # Migrate any 'Student' or 'Steve' records to 'Maria John'
-        cursor.execute("UPDATE quiz_results SET username = 'Maria John' WHERE username IN ('Student', 'Steve')")
+        # Migrate any 'Student', 'Steve', or 'Maria John' records to 'Sneha'
+        cursor.execute("UPDATE quiz_results SET username = 'Sneha' WHERE username IN ('Student', 'Steve', 'Maria John')")
         
         conn.commit()
         conn.close()
@@ -592,8 +592,8 @@ Make sure the keys in 'tutor_feedback' correspond to the question index (e.g., "
 def home():
     """Portal Dashboard listing uploaded files, quiz analytics charts, and historical summary logs."""
     # Ensure a default username exists in session to simulate user logins
-    if "username" not in session or session["username"] in ("Student", "Steve"):
-        session["username"] = "Maria John"
+    if "username" not in session or session["username"] in ("Student", "Steve", "Maria John"):
+        session["username"] = "Sneha"
 
     conn = get_db_connection()
     materials = conn.execute("SELECT id, filename, created_at FROM materials ORDER BY id DESC").fetchall()
@@ -1056,7 +1056,7 @@ def clear_history():
 @app.route("/api/analytics")
 def api_analytics():
     """Retrieve raw historical statistics to draw charts on dashboard."""
-    username = session.get("username", "Maria John")
+    username = session.get("username", "Sneha")
     conn = get_db_connection()
     records = conn.execute("""
         SELECT percentage, readiness_score, timestamp, difficulty, filename
@@ -1112,7 +1112,7 @@ def flashcards_spaced():
 @app.route("/gpa-predictor")
 def semester_predictor():
     """GPA prediction tool based on quiz performance data."""
-    username = session.get("username", "Maria John")
+    username = session.get("username", "Sneha")
     conn = get_db_connection()
     records = conn.execute("""
         SELECT filename, topic, difficulty, score, total, percentage, readiness_score, timestamp
@@ -1148,7 +1148,7 @@ def semester_predictor():
 @app.route("/career-navigator")
 def career_navigator():
     """Career readiness assessment based on learning profile."""
-    username = session.get("username", "Maria John")
+    username = session.get("username", "Sneha")
     conn = get_db_connection()
     records = conn.execute("""
         SELECT filename, topic, difficulty, percentage, readiness_score, weak_topics
