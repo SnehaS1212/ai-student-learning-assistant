@@ -15,14 +15,12 @@
 
 </div>
 
----
-
 ## 📄 Project Documentation & Presentation
 
 | Document Type | File Link | Description |
 | :--- | :--- | :--- |
-| 📊 **Presentation (PPT)** | [`internship ppt.pptx`](file:///c:/Users/anuja/AI-Student-Learning-Assistant/internship ppt.pptx) | Complete Internship Presentation Slides detailing architecture, AI pipeline, and outcomes |
-| 📑 **Internship Report** | [`internship report.docx`](file:///c:/Users/anuja/AI-Student-Learning-Assistant/internship report.docx) | Comprehensive Internship Project Report & System Documentation |
+| 📊 **Presentation (PPT)** | [`docs/internship ppt.pptx`](file:///c:/Users/anuja/AI-Student-Learning-Assistant/docs/internship ppt.pptx) | Complete Internship Presentation Slides detailing architecture, AI pipeline, and outcomes |
+| 📑 **Internship Report** | [`docs/internship report.docx`](file:///c:/Users/anuja/AI-Student-Learning-Assistant/docs/internship report.docx) | Comprehensive Internship Project Report & System Documentation |
 
 ---
 
@@ -30,7 +28,7 @@
 
 - [Documentation & Presentation](#-project-documentation--presentation)
 - [Overview](#-overview)
-- [Features](#-features)
+- [Key Features](#-key-features)
 - [Tech Stack](#-tech-stack)
 - [Getting Started](#-getting-started)
   - [Prerequisites](#prerequisites)
@@ -48,23 +46,17 @@
 
 The **AI Student Learning Assistant** is a full-stack Flask web application that leverages **Groq's ultra-fast LLM inference** to help students learn smarter. Upload any study material — PDF, DOCX, TXT, Markdown, or even images — and the AI instantly generates:
 
-- 📝 Multiple summary styles (Detailed, Short, Revision, One-Page Notes)
-- 🃏 Interactive flashcards for spaced repetition
-- 🧠 Adaptive quizzes with configurable difficulty
-- 📊 Personalized performance analytics & study plans
-- 🎓 AI tutor feedback on incorrect answers
+- 📝 **Concise Summaries** with key takeaways
+- 🎴 **Interactive Flashcards** for active recall
+- ❓ **Customizable Quizzes** (Multiple Choice, Short Answer, True/False)
+- 📅 **Personalized Study Plans** tailored to target exam dates
+- 📊 **Detailed Performance Analytics** & Leaderboards
 
 ---
 
-## ✨ Features
+## 🚀 Key Features
 
 | Feature | Description |
-|---|---|
-| **📁 Multi-format Upload** | Supports PDF, DOCX, DOC, TXT, MD, PNG, JPG, JPEG files (up to 100MB) |
-| **🤖 AI Summaries** | 4 auto-generated summary formats: Detailed, Short, Exam Revision, One-Page Notes |
-| **🃏 Flashcards** | 20 AI-generated flashcards per material with an interactive flip card player |
-| **📝 Adaptive Quizzes** | MCQ quizzes with Easy / Medium / Hard difficulty and custom question count |
-| **📊 Performance Analytics** | Score tracking, weak topic identification, and improvement rate over time |
 | **🗓 Study Plans** | Personalized 1-Day, 3-Day, and 7-Day study plans based on quiz performance |
 | **🏆 Leaderboard** | Compare scores and track your ranking among peers |
 | **🎓 Exam Readiness** | AI-calculated readiness score with confidence level and focus recommendations |
