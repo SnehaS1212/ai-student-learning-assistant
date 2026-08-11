@@ -11,14 +11,24 @@
 
 **An intelligent, AI-powered web application that transforms your study materials into interactive learning experiences — summaries, flashcards, quizzes, study plans, and more.**
 
-[🐛 Report Bug](https://github.com/sneha-s2005/ai-student-learning-assistant/issues) · [✨ Request Feature](https://github.com/sneha-s2005/ai-student-learning-assistant/issues)
+[🐛 Report Bug](https://github.com/SnehaS1212/ai-student-learning-assistant/issues) · [✨ Request Feature](https://github.com/SnehaS1212/ai-student-learning-assistant/issues)
 
 </div>
 
 ---
 
+## 📄 Project Documentation & Presentation
+
+| Document Type | File Link | Description |
+| :--- | :--- | :--- |
+| 📊 **Presentation (PPT)** | [`internship ppt.pptx`](file:///c:/Users/anuja/AI-Student-Learning-Assistant/internship ppt.pptx) | Complete Internship Presentation Slides detailing architecture, AI pipeline, and outcomes |
+| 📑 **Internship Report** | [`internship report.docx`](file:///c:/Users/anuja/AI-Student-Learning-Assistant/internship report.docx) | Comprehensive Internship Project Report & System Documentation |
+
+---
+
 ## 📋 Table of Contents
 
+- [Documentation & Presentation](#-project-documentation--presentation)
 - [Overview](#-overview)
 - [Features](#-features)
 - [Tech Stack](#-tech-stack)
