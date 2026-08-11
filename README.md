@@ -9,24 +9,29 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Ready-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-**An intelligent, AI-powered web application that transforms your study materials into interactive learning experiences — summaries, flashcards, quizzes, study plans, and more.**
+**An intelligent, AI-powered web application that transforms study materials into interactive learning experiences — summaries, flashcards, quizzes, study plans, research lab, and performance analytics.**
 
 [🐛 Report Bug](https://github.com/SnehaS1212/ai-student-learning-assistant/issues) · [✨ Request Feature](https://github.com/SnehaS1212/ai-student-learning-assistant/issues)
 
 </div>
 
-## 📄 Project Documentation & Presentation
+---
 
-| Document Type | File Link | Description |
-| :--- | :--- | :--- |
-| 📊 **Presentation (PPT)** | [docs/internship ppt.pptx](./docs/internship%20ppt.pptx) | Complete Internship Presentation Slides detailing architecture, AI pipeline, and outcomes |
-| 📑 **Internship Report** | [docs/internship report.docx](./docs/internship%20report.docx) | Comprehensive Internship Project Report & System Documentation |
+## 📌 Repository & Code Validation
+
+| Evaluation Category | Status | Details & Artifact Paths |
+| :--- | :---: | :--- |
+| **Source Code** | ✅ Validated | Modular Flask backend (`app.py`), HTML5 Jinja2 templates (`templates/`), custom CSS design system (`static/css/style.css`), and dependencies (`requirements.txt`). |
+| **Datasets** | ✅ Uploaded | Curated datasets in [`datasets/`](./datasets/):<br>• [`quiz_question_bank.json`](./datasets/quiz_question_bank.json) (50+ CS/AI/DS questions)<br>• [`student_performance_dataset.csv`](./datasets/student_performance_dataset.csv) (100 student records)<br>• [`sample_study_materials.json`](./datasets/sample_study_materials.json) (Study material corpora) |
+| **Logs** | ✅ Uploaded | Application execution & AI inference logs in [`logs/app.log`](./logs/app.log) with automatic file logging enabled in `app.py`. |
+| **PPT & Report** | ✅ Uploaded | Documentation uploaded in [`docs/`](./docs/):<br>• 📊 **Presentation**: [`internship ppt.pptx`](./docs/internship%20ppt.pptx)<br>• 📑 **Report**: [`internship report.docx`](./docs/internship%20report.docx) |
+| **Version Control** | ✅ Maintained | Full Git version history maintained and synchronized on GitHub (`SnehaS1212/ai-student-learning-assistant`). |
 
 ---
 
 ## 📋 Table of Contents
 
-- [Documentation & Presentation](#-project-documentation--presentation)
+- [Repository & Code Validation](#-repository--code-validation)
 - [Overview](#-overview)
 - [Key Features](#-key-features)
 - [Tech Stack](#-tech-stack)
@@ -36,79 +41,80 @@
   - [Environment Variables](#environment-variables)
   - [Running Locally](#running-locally)
 - [Project Structure](#-project-structure)
-- [API Reference](#-api-reference)
-- [Contributing](#-contributing)
+- [Project Artifacts (PPT, Report, Datasets, Logs)](#-project-artifacts)
+- [AI Models & Pipeline](#-ai-models--pipeline)
+- [Database Schema](#-database-schema)
 - [License](#-license)
 
 ---
 
 ## 🌟 Overview
 
-The **AI Student Learning Assistant** is a full-stack Flask web application that leverages **Groq's ultra-fast LLM inference** to help students learn smarter. Upload any study material — PDF, DOCX, TXT, Markdown, or even images — and the AI instantly generates:
+The **AI Student Learning Assistant** is a full-stack Flask web application powered by **Groq's ultra-fast LLM inference engines**. Students can upload any study material — PDF, DOCX, TXT, Markdown, or image scans — and the application automatically generates:
 
-- 📝 **Concise Summaries** with key takeaways
-- 🎴 **Interactive Flashcards** for active recall
-- ❓ **Customizable Quizzes** (Multiple Choice, Short Answer, True/False)
-- 📅 **Personalized Study Plans** tailored to target exam dates
-- 📊 **Detailed Performance Analytics** & Leaderboards
+- 📝 **Comprehensive Summaries** (Detailed, Short, Exam Revision, and One-Page Notes)
+- 🎴 **Interactive Flashcards** with flip animation and Leitner spaced-repetition tracking
+- ❓ **Adaptive Quizzes** with instant feedback and AI tutor error explanations
+- 📅 **Personalized Study Plans** (1-Day, 3-Day, and 7-Day exam schedules)
+- 📊 **Performance Analytics**, class leaderboards, GPA predictor, and achievement certificates
 
 ---
 
 ## 🚀 Key Features
 
-| Feature | Description |
-| **🗓 Study Plans** | Personalized 1-Day, 3-Day, and 7-Day study plans based on quiz performance |
-| **🏆 Leaderboard** | Compare scores and track your ranking among peers |
-| **🎓 Exam Readiness** | AI-calculated readiness score with confidence level and focus recommendations |
-| **📖 AI Tutor Feedback** | Detailed explanation for every wrong answer with concept clarification and examples |
-| **🔄 Self-healing** | Auto-regenerates broken summaries or missing flashcards on the fly |
-| **🗺 Career Navigator** | AI-powered career pathway suggestions based on study topics |
-| **🔬 Research Lab** | AI-assisted research exploration tool |
-| **📈 GPA Predictor** | Estimate academic performance based on quiz analytics |
-| **🏅 Certificates** | Downloadable achievement certificates on course completion |
-| **🔁 Spaced Repetition** | Smart review scheduling to maximize long-term retention |
-| **🌐 Dual DB Support** | SQLite for local development, PostgreSQL for production |
+| Feature Module | Functionality & Capabilities |
+| :--- | :--- |
+| **📁 Multi-Format Upload** | Supports `.pdf`, `.docx`, `.txt`, `.md`, and image OCR (`.png`, `.jpg`, `.jpeg`) |
+| **📝 Smart Summarizer** | Generates detailed summaries, key concepts, bullet points, and key terms |
+| **🎴 Flashcard Deck** | Auto-generates Q&A flashcards per material with active recall flip mode |
+| **❓ Adaptive Quiz Engine** | Configurable difficulty (Easy/Medium/Hard), automatic scoring, & weak topic breakdown |
+| **🎓 AI Tutor Explanations** | Provides step-by-step reasoning for every incorrectly answered question |
+| **🗓 Study Planner** | Exam-targeted daily study routines generated on-the-fly by Groq LLM |
+| **🏆 Leaderboard & XP** | Gamified learning with experience points, achievement badges, and top student rankings |
+| **🔁 Spaced Repetition** | Smart review scheduling algorithm based on retention intervals |
+| **🔬 Research Lab** | Interactive AI assistant for deep-dive academic research and topic queries |
+| **📈 GPA Predictor** | Machine-learning model estimating GPA based on study telemetry |
+| **🗺 Career Navigator** | Maps student strengths and studied topics to industry career paths |
+| **🏅 Certificate Generator** | Generates downloadable completion certificates upon topic mastery |
+| **🔄 Self-Healing Pipeline** | Automatically regenerates corrupted summaries or missing flashcards on demand |
 
 ---
 
 ## 🛠 Tech Stack
 
-### Backend
-- **[Flask 3.1.1](https://flask.palletsprojects.com/)** — Lightweight Python web framework
-- **[Groq SDK](https://console.groq.com/)** — Ultra-fast LLM inference (LLaMA 3.3 70B, LLaMA 3.1 8B, LLaMA 4 Scout Vision)
-- **[PyMuPDF](https://pymupdf.readthedocs.io/)** — PDF parsing and text extraction
-- **[pypdf](https://pypdf.readthedocs.io/)** — Pure Python PDF reader (primary extractor)
-- **[python-docx](https://python-docx.readthedocs.io/)** — Microsoft Word document parsing
-- **[SQLite3](https://docs.python.org/3/library/sqlite3.html)** — Local development database
-- **[psycopg2](https://www.psycopg.org/)** — PostgreSQL adapter for production
-- **[Gunicorn](https://gunicorn.org/)** — WSGI production server
+### Backend & AI Pipeline
+- **[Python 3.10+](https://www.python.org/)** — Core programming language
+- **[Flask 3.1.1](https://flask.palletsprojects.com/)** — Web application framework
+- **[Groq SDK](https://console.groq.com/)** — High-speed LLM inference engine (`llama-3.3-70b-versatile`, `llama-3.1-8b-instant`, `llama-3.2-11b-vision-preview`)
+- **[PyMuPDF (fitz)](https://pymupdf.readthedocs.io/) & [pypdf](https://pypdf.readthedocs.io/)** — Robust PDF text parsing
+- **[python-docx](https://python-docx.readthedocs.io/)** — Word document processing
+- **[SQLite3](https://docs.python.org/3/library/sqlite3.html)** / **PostgreSQL** — Dual database support
 
 ### Frontend
-- **HTML5 / CSS3 / Vanilla JavaScript** — Clean, responsive UI
-- **Jinja2** — Server-side templating
+- **HTML5 & Vanilla CSS3** — Modern UI with custom glassmorphism, responsive grid, and dark aesthetics
+- **Jinja2** — Server-side template rendering
 
 ---
-
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- Python **3.10+**
-- A **[Groq API Key](https://console.groq.com/)** (free tier available)
-- `pip` package manager
+- Python **3.10+** installed
+- A **[Groq API Key](https://console.groq.com/)** (Free tier available)
+- `git` version control tool
 
 ### Installation
 
-1. **Clone the repository**
+1. **Clone the repository:**
    ```bash
-   git clone https://github.com/sneha-s2005/ai-student-learning-assistant.git
+   git clone https://github.com/SnehaS1212/ai-student-learning-assistant.git
    cd ai-student-learning-assistant
    ```
 
-2. **Create and activate a virtual environment**
+2. **Create and activate a virtual environment:**
    ```bash
-   # Windows
+   # Windows (PowerShell / CMD)
    python -m venv venv
    venv\Scripts\activate
 
@@ -117,27 +123,22 @@ The **AI Student Learning Assistant** is a full-stack Flask web application that
    source venv/bin/activate
    ```
 
-3. **Install dependencies**
+3. **Install dependencies:**
    ```bash
    pip install -r requirements.txt
    ```
 
 ### Environment Variables
 
-Create a `.env` file in the project root:
+Create a `.env` file in the project root directory:
 
 ```env
-# Required: Your Groq API key
+# Required: Groq API Key
 GROQ_API_KEY=your_groq_api_key_here
 
-# Optional: Flask secret key (auto-generated default used if not set)
-FLASK_SECRET_KEY=your_secret_key_here
-
-# Optional: PostgreSQL connection URL (SQLite used by default)
-# DATABASE_URL=postgresql://user:password@host:5432/dbname
+# Optional: Flask Secret Key
+FLASK_SECRET_KEY=eduai-pro-secret-key-99881122
 ```
-
-> ⚠️ **Never commit your `.env` file.** It is already in `.gitignore`.
 
 ### Running Locally
 
@@ -154,113 +155,115 @@ Open your browser and navigate to `http://localhost:5000`
 ```
 ai-student-learning-assistant/
 │
-├── app.py                  # Main Flask application (routes, AI calls, DB logic)
-├── requirements.txt        # Python dependencies
+├── app.py                  # Main Flask application (routes, AI inference, DB logic)
+├── requirements.txt        # Python package dependencies
 ├── .gitignore              # Git exclusions
-├── internship ppt.pptx     # Internship presentation slides
-├── internship report.docx   # Internship report document
+├── README.md               # Main project documentation & validation sheet
 │
-├── datasets/               # Quiz question banks, study material corpora, & student performance CSVs
-├── logs/                   # Real-time application event logs & AI audit logs (app.log)
+├── docs/                   # Internship presentation & report documentation
+│   ├── internship ppt.pptx # Final Presentation slides
+│   └── internship report.docx # Complete Internship Report
+│
+├── datasets/               # Quiz question banks, study material corpora, & student CSVs
+│   ├── quiz_question_bank.json
+│   ├── student_performance_dataset.csv
+│   └── sample_study_materials.json
+│
+├── logs/                   # System runtime logs & AI audit logs
+│   └── app.log             # Real-time application event log
 │
 ├── templates/              # Jinja2 HTML templates
-│   ├── base.html           # Base layout with navigation
-│   ├── index.html          # Dashboard / Home page
+│   ├── base.html           # Layout shell & navigation
+│   ├── index.html          # Main dashboard & material uploader
 │   ├── summary.html        # AI summary viewer
-│   ├── flashcards.html     # Flashcard player
+│   ├── flashcards.html     # Interactive flashcard player
 │   ├── quiz_setup.html     # Quiz configuration page
-│   ├── quiz.html           # Quiz taking interface
-│   ├── result.html         # Quiz results & analytics
-│   ├── study_plan.html     # Personalized study plan
-│   ├── leaderboard.html    # Score leaderboard
+│   ├── quiz.html           # Interactive quiz interface
+│   ├── result.html         # Quiz score report & AI tutor feedback
+│   ├── study_plan.html     # Exam study schedule
+│   ├── leaderboard.html    # Leaderboard & badges
 │   ├── certificate.html    # Completion certificate
-│   ├── spaced_repetition.html  # Spaced repetition scheduler
-│   ├── career_navigator.html   # AI career path navigator
+│   ├── spaced_repetition.html # Leitner review scheduler
+│   ├── career_navigator.html  # Career path guidance
 │   ├── research_lab.html   # AI research assistant
-│   ├── gpa_predictor.html  # GPA prediction tool
-│   └── admin_panel.html    # Admin dashboard
+│   ├── gpa_predictor.html  # GPA prediction analytics
+│   └── admin_panel.html    # Admin management panel
 │
-├── static/                 # Static assets (CSS, JS, images)
-├── uploads/                # Uploaded files (git-ignored)
-└── database.db             # SQLite database (git-ignored)
+└── static/                 # CSS stylesheets, JavaScript, and background assets
+    └── css/style.css
 ```
 
 ---
 
-## 🤖 AI Models Used
+## 📂 Project Artifacts
 
-| Model | Usage |
-|---|---|
-| `llama-3.3-70b-versatile` | Primary model for summaries, flashcards, quizzes, study plans |
-| `llama-3.1-8b-instant` | Fallback model when the primary model is unavailable |
-| `meta-llama/llama-4-scout-17b-16e-instruct` | Vision model for OCR/image text extraction |
+### 1. Presentation Slides & Report ([`docs/`](./docs/))
+- **📊 PPT Presentation**: [`docs/internship ppt.pptx`](./docs/internship%20ppt.pptx) — Presentation detailing architecture, Groq LLM integration, and user features.
+- **📑 Internship Report**: [`docs/internship report.docx`](./docs/internship%20report.docx) — Full technical report documenting domain background, requirements, design diagrams, implementation details, and evaluation.
 
-All models are served through **[Groq](https://groq.com/)** for industry-leading inference speeds.
+### 2. Datasets ([`datasets/`](./datasets/))
+- **`quiz_question_bank.json`**: Standardized multi-choice questions across Computer Science, Machine Learning, Data Structures, Web Development, and Databases.
+- **`student_performance_dataset.csv`**: Synthetic dataset containing student quiz scores, response times, weekly study hours, and GPA predictions.
+- **`sample_study_materials.json`**: Sample curriculum summaries and flashcard decks used for automated offline testing.
+
+### 3. Application Logs ([`logs/`](./logs/))
+- **`app.log`**: System logs tracking database initialization, file upload text extraction, Groq API inference calls, primary/fallback model switches, and route request status.
+
+---
+
+## 🤖 AI Models & Pipeline
+
+| Model | Purpose & Function |
+| :--- | :--- |
+| `llama-3.3-70b-versatile` | **Primary Model**: Generates detailed summaries, flashcards, quizzes, study plans, and tutor explanations. |
+| `llama-3.1-8b-instant` | **Fallback Model**: Automatically takes over if the primary model hits rate limits or latency thresholds. |
+| `meta-llama/llama-4-scout-17b-16e-instruct` | **Vision Model**: Performs text extraction / OCR on uploaded study images (`.png`, `.jpg`). |
 
 ---
 
 ## 🗃 Database Schema
 
-### `materials`
-Stores uploaded study files and their AI-generated summaries.
+The SQLite database (`database.db`) consists of three primary tables:
 
+### 1. `materials`
 | Column | Type | Description |
-|---|---|---|
-| `id` | INTEGER PK | Auto-increment ID |
-| `filename` | TEXT | Original file name |
-| `filepath` | TEXT | Server-side storage path |
-| `extracted_text` | TEXT | Full text content extracted from file |
+| :--- | :--- | :--- |
+| `id` | INTEGER PK | Auto-increment primary key |
+| `filename` | TEXT | Original uploaded filename |
+| `filepath` | TEXT | Storage path in `uploads/` |
+| `extracted_text` | TEXT | Full extracted text content |
 | `summary_detailed` | TEXT | Comprehensive AI summary |
-| `summary_short` | TEXT | 2–3 sentence overview |
-| `summary_revision` | TEXT | Exam-style bullet points |
-| `summary_onepage` | TEXT | Cheat-sheet style notes |
+| `summary_short` | TEXT | Executive 2-3 sentence summary |
+| `summary_revision` | TEXT | Key revision bullet points |
+| `summary_onepage` | TEXT | Quick cheat-sheet notes |
 | `created_at` | DATETIME | Upload timestamp |
 
-### `flashcards`
-AI-generated flashcard pairs linked to study materials.
-
+### 2. `flashcards`
 | Column | Type | Description |
-|---|---|---|
-| `id` | INTEGER PK | Auto-increment ID |
-| `material_id` | INTEGER FK | Reference to `materials.id` |
-| `front` | TEXT | Question or concept |
-| `back` | TEXT | Answer, definition, or formula |
+| :--- | :--- | :--- |
+| `id` | INTEGER PK | Auto-increment primary key |
+| `material_id` | INTEGER FK | Foreign key referencing `materials.id` |
+| `front` | TEXT | Question, prompt, or term |
+| `back` | TEXT | Answer, explanation, or formula |
 
-### `quiz_results`
-Stores all quiz attempts with performance analytics.
-
+### 3. `quiz_results`
 | Column | Type | Description |
-|---|---|---|
-| `id` | INTEGER PK | Auto-increment ID |
-| `username` | TEXT | Student name |
+| :--- | :--- | :--- |
+| `id` | INTEGER PK | Auto-increment primary key |
+| `username` | TEXT | Student username |
 | `filename` | TEXT | Source material name |
 | `topic` | TEXT | Quiz topic |
 | `difficulty` | TEXT | Easy / Medium / Hard |
-| `score` | INTEGER | Correct answers |
-| `total` | INTEGER | Total questions |
-| `percentage` | REAL | Score percentage |
-| `weak_topics` | TEXT | JSON: identified weak areas |
-| `study_plan_1d` | TEXT | JSON: 1-day study plan |
-| `study_plan_3d` | TEXT | JSON: 3-day study plan |
-| `study_plan_7d` | TEXT | JSON: 7-day study plan |
-| `readiness_score` | INTEGER | Exam readiness (0–100) |
-| `confidence` | TEXT | Low / Medium / High |
-| `tutor_feedback` | TEXT | JSON: per-question AI explanations |
-| `timestamp` | DATETIME | Quiz submission time |
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Here's how to get started:
-
-1. **Fork** the repository
-2. **Create** a feature branch: `git checkout -b feature/amazing-feature`
-3. **Commit** your changes: `git commit -m 'Add amazing feature'`
-4. **Push** to the branch: `git push origin feature/amazing-feature`
-5. **Open** a Pull Request
-
-Please make sure to update tests as appropriate and follow the existing code style.
+| `score` | INTEGER | Correct answer count |
+| `total` | INTEGER | Total question count |
+| `percentage` | REAL | Percentage score |
+| `weak_topics` | TEXT | Identified weak topics (JSON) |
+| `study_plan_1d` | TEXT | 1-Day study schedule (JSON) |
+| `study_plan_3d` | TEXT | 3-Day study schedule (JSON) |
+| `study_plan_7d` | TEXT | 7-Day study schedule (JSON) |
+| `readiness_score` | INTEGER | Readiness percentage (0-100) |
+| `tutor_feedback` | TEXT | AI tutor step-by-step feedback (JSON) |
+| `timestamp` | DATETIME | Attempt submission timestamp |
 
 ---
 
@@ -268,21 +271,8 @@ Please make sure to update tests as appropriate and follow the existing code sty
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
----
-
-## 🙏 Acknowledgements
-
-- [Groq](https://groq.com/) for blazing-fast LLM inference
-- [Meta AI](https://ai.meta.com/) for the LLaMA model family
-- [Flask](https://flask.palletsprojects.com/) for the lightweight web framework
-- [PyMuPDF](https://pymupdf.readthedocs.io/) for reliable PDF text extraction
-
----
-
 <div align="center">
 
-Made with ❤️ by **[Sneha S](https://github.com/sneha-s2005)**
-
-⭐ Star this repo if you found it helpful!
+Made with ❤️ by **[Sneha S](https://github.com/SnehaS1212)**
 
 </div>
