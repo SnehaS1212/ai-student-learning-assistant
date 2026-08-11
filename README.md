@@ -19,8 +19,8 @@
 
 | Document Type | File Link | Description |
 | :--- | :--- | :--- |
-| 📊 **Presentation (PPT)** | [`docs/internship ppt.pptx`](file:///c:/Users/anuja/AI-Student-Learning-Assistant/docs/internship ppt.pptx) | Complete Internship Presentation Slides detailing architecture, AI pipeline, and outcomes |
-| 📑 **Internship Report** | [`docs/internship report.docx`](file:///c:/Users/anuja/AI-Student-Learning-Assistant/docs/internship report.docx) | Comprehensive Internship Project Report & System Documentation |
+| 📊 **Presentation (PPT)** | [docs/internship ppt.pptx](./docs/internship%20ppt.pptx) | Complete Internship Presentation Slides detailing architecture, AI pipeline, and outcomes |
+| 📑 **Internship Report** | [docs/internship report.docx](./docs/internship%20report.docx) | Comprehensive Internship Project Report & System Documentation |
 
 ---
 

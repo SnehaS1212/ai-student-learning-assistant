@@ -8,5 +8,5 @@ This directory contains the official project presentation slides and comprehensi
 
 | Document | File Name | Format | Description |
 | :--- | :--- | :---: | :--- |
-| 📊 **Presentation Slides** | [`internship ppt.pptx`](file:///c:/Users/anuja/AI-Student-Learning-Assistant/docs/internship ppt.pptx) | PowerPoint (`.pptx`) | Official Internship Final Presentation detailing system architecture, Groq AI pipeline, user features, and key achievements. |
-| 📑 **Internship Report** | [`internship report.docx`](file:///c:/Users/anuja/AI-Student-Learning-Assistant/docs/internship report.docx) | Word Document (`.docx`) | Comprehensive Internship Project Report covering domain study, requirements, technical design, module implementation, and test validation. |
+| 📊 **Presentation Slides** | [internship ppt.pptx](./internship%20ppt.pptx) | PowerPoint (`.pptx`) | Official Internship Final Presentation detailing system architecture, Groq AI pipeline, user features, and key achievements. |
+| 📑 **Internship Report** | [internship report.docx](./internship%20report.docx) | Word Document (`.docx`) | Comprehensive Internship Project Report covering domain study, requirements, technical design, module implementation, and test validation. |

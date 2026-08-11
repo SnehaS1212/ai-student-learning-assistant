@@ -8,7 +8,7 @@ This directory contains execution, initialization, performance, and API audit lo
 
 | Log File | Format | Description | Retention / Policy |
 | :--- | :---: | :--- | :--- |
-| [`app.log`](file:///c:/Users/anuja/AI-Student-Learning-Assistant/logs/app.log) | Text Log | Real-time application event logs, database connection status, AI model requests, fallback triggers, and user activity | Tracked in Git for code validation & auditing |
+| [app.log](./app.log) | Text Log | Real-time application event logs, database connection status, AI model requests, fallback triggers, and user activity | Tracked in Git for code validation & auditing |
 
 ---
 

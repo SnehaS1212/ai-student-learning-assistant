@@ -8,9 +8,9 @@ This directory contains the curated datasets, benchmark evaluation sets, standar
 
 | Dataset File | Format | Record Count | Description | Primary Usage |
 | :--- | :---: | :---: | :--- | :--- |
-| [`quiz_question_bank.json`](file:///c:/Users/anuja/AI-Student-Learning-Assistant/datasets/quiz_question_bank.json) | JSON | 50+ Questions | Standardized multi-choice questions across Computer Science, AI/ML, Math, and Data Structures | AI Quiz Generation fallback & evaluation benchmark |
-| [`student_performance_dataset.csv`](file:///c:/Users/anuja/AI-Student-Learning-Assistant/datasets/student_performance_dataset.csv) | CSV | 100 Student Records | Student quiz scores, response times, topic mastery ratings, and study durations | Analytics, Leaderboard & GPA Predictor model training |
-| [`sample_study_materials.json`](file:///c:/Users/anuja/AI-Student-Learning-Assistant/datasets/sample_study_materials.json) | JSON | 10 Subjects | Curriculum topic summaries, key concepts, bullet points, and key terms | AI Summarizer, Flashcard Player, and Research Lab testing |
+| [quiz_question_bank.json](./quiz_question_bank.json) | JSON | 50+ Questions | Standardized multi-choice questions across Computer Science, AI/ML, Math, and Data Structures | AI Quiz Generation fallback & evaluation benchmark |
+| [student_performance_dataset.csv](./student_performance_dataset.csv) | CSV | 100 Student Records | Student quiz scores, response times, topic mastery ratings, and study durations | Analytics, Leaderboard & GPA Predictor model training |
+| [sample_study_materials.json](./sample_study_materials.json) | JSON | 10 Subjects | Curriculum topic summaries, key concepts, bullet points, and key terms | AI Summarizer, Flashcard Player, and Research Lab testing |
 
 ---
 
