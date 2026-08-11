@@ -155,6 +155,11 @@ ai-student-learning-assistant/
 ├── app.py                  # Main Flask application (routes, AI calls, DB logic)
 ├── requirements.txt        # Python dependencies
 ├── .gitignore              # Git exclusions
+├── internship ppt.pptx     # Internship presentation slides
+├── internship report.docx   # Internship report document
+│
+├── datasets/               # Quiz question banks, study material corpora, & student performance CSVs
+├── logs/                   # Real-time application event logs & AI audit logs (app.log)
 │
 ├── templates/              # Jinja2 HTML templates
 │   ├── base.html           # Base layout with navigation

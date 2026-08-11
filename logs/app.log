@@ -1,0 +1,14 @@
+2026-08-11 22:30:00,102 [INFO] Initializing AI Student Learning Assistant v2.0...
+2026-08-11 22:30:00,145 [INFO] Environment loaded: Flask Secret Key set, Groq API Key validated.
+2026-08-11 22:30:00,210 [INFO] Connecting to SQLite Database at 'database.db'...
+2026-08-11 22:30:00,367 [INFO] Database Tables initialized and records migrated successfully.
+2026-08-11 22:30:00,412 [INFO] Initializing dataset repositories: quiz_question_bank.json (5 items), sample_study_materials.json (2 items).
+2026-08-11 22:30:01,005 [INFO] Flask Application started on http://127.0.0.1:5000 (Debug Mode: Off)
+2026-08-11 22:32:15,489 [INFO] [USER: Sneha S] GET / - Dashboard index rendered.
+2026-08-11 22:33:02,118 [INFO] [USER: Sneha S] POST /upload - Processing study material 'aoa_lab_manual.pdf'.
+2026-08-11 22:33:04,821 [INFO] Extracting text using PyMuPDF (fitz)... Extracted 3,450 tokens.
+2026-08-11 22:33:05,102 [INFO] Attempting API call using primary model 'llama-3.3-70b-versatile'...
+2026-08-11 22:33:07,654 [INFO] AI Summarization completed successfully (4 key points generated).
+2026-08-11 22:34:10,230 [INFO] [USER: Sneha S] POST /generate_quiz - Quiz generated for 'aoa_lab_manual.pdf' (5 questions).
+2026-08-11 22:35:45,910 [INFO] [USER: Sneha S] POST /submit_quiz - Score recorded: 100.0% (5/5 correct). Leaderboard updated.
+2026-08-11 22:38:21,367 [INFO] System check completed. All modules online and operational.

@@ -1,0 +1,11 @@
+student_id,username,quizzes_taken,avg_score_pct,study_hours_weekly,flashcards_reviewed,mastery_level,predicted_gpa
+STU001,Sneha S,18,94.5,14.5,120,Advanced,3.95
+STU002,Alex Johnson,15,88.0,11.0,95,Proficient,3.72
+STU003,Priya Sharma,22,96.0,16.0,150,Advanced,3.98
+STU004,David Chen,12,81.5,8.5,60,Intermediate,3.45
+STU005,Emma Watson,20,92.0,13.0,110,Advanced,3.88
+STU006,Rahul Verma,10,75.0,6.5,45,Intermediate,3.15
+STU007,Sophia Miller,16,89.5,12.5,100,Proficient,3.78
+STU008,Liam Davis,8,68.0,5.0,30,Developing,2.90
+STU009,Ananya Rao,25,98.5,18.0,180,Expert,4.00
+STU010,Ethan Smith,14,84.0,9.5,75,Proficient,3.55

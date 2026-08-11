@@ -13,9 +13,16 @@ import fitz  # PyMuPDF
 # ==========================================================================
 # LOGGING CONFIGURATION
 # ==========================================================================
+LOGS_FOLDER = "logs"
+os.makedirs(LOGS_FOLDER, exist_ok=True)
+
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s"
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler(os.path.join(LOGS_FOLDER, "app.log"), encoding="utf-8"),
+        logging.StreamHandler()
+    ]
 )
 logger = logging.getLogger(__name__)
 

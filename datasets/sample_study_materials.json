@@ -1,0 +1,42 @@
+[
+  {
+    "material_id": "MAT_001",
+    "topic": "Neural Networks & Backpropagation",
+    "subject": "Deep Learning",
+    "summary": "Neural networks process vector inputs through layers of linear matrix transformations followed by non-linear activation functions. Backpropagation calculates loss gradients using chain rule derivatives to update weight weights via Stochastic Gradient Descent (SGD).",
+    "key_concepts": [
+      "Forward Propagation & Activation Layers",
+      "Loss Functions (Cross-Entropy, MSE)",
+      "Chain Rule Gradient Computation",
+      "Weight Updates & Learning Rate Optimization"
+    ],
+    "flashcards": [
+      {
+        "front": "What is Backpropagation?",
+        "back": "An algorithm for computing gradients of the loss function with respect to weights using the chain rule."
+      },
+      {
+        "front": "Why are non-linear activation functions necessary?",
+        "back": "Without non-linearities, a multi-layer neural network collapses into a single linear transformation."
+      }
+    ]
+  },
+  {
+    "material_id": "MAT_002",
+    "topic": "Database Indexing & B-Trees",
+    "subject": "Database Engineering",
+    "summary": "B-Tree indexes optimize disk I/O operations by maintaining sorted balanced tree hierarchies. Clustered indexes dictate physical row storage order while non-clustered indexes contain pointers to row locations.",
+    "key_concepts": [
+      "B-Tree & B+ Tree Data Structures",
+      "Clustered vs Non-Clustered Indexes",
+      "Index Scan vs Index Seek Execution Plans",
+      "Write Amplification Penalty of Heavy Indexing"
+    ],
+    "flashcards": [
+      {
+        "front": "How does a B+ Tree differ from a B-Tree?",
+        "back": "In B+ Trees, data pointers are stored exclusively in leaf nodes, linked sequentially for range queries."
+      }
+    ]
+  }
+]

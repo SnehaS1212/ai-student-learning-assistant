@@ -1,0 +1,47 @@
+[
+  {
+    "question_id": "CS_DS_001",
+    "category": "Data Structures & Algorithms",
+    "difficulty": "Medium",
+    "question": "What is the worst-case time complexity of QuickSort?",
+    "options": ["O(N log N)", "O(N^2)", "O(N)", "O(1)"],
+    "correct_answer": "O(N^2)",
+    "explanation": "QuickSort degrades to O(N^2) when the pivot selection produces highly unbalanced sub-arrays (e.g., already sorted array with first element pivot)."
+  },
+  {
+    "question_id": "CS_AI_002",
+    "category": "Artificial Intelligence & Machine Learning",
+    "difficulty": "Easy",
+    "question": "Which activation function is most commonly used in hidden layers of deep neural networks to mitigate vanishing gradients?",
+    "options": ["Sigmoid", "ReLU", "Tanh", "Linear"],
+    "correct_answer": "ReLU",
+    "explanation": "Rectified Linear Unit (ReLU) computes max(0, x), preventing gradient saturation for positive inputs."
+  },
+  {
+    "question_id": "CS_WEB_003",
+    "category": "Web Development",
+    "difficulty": "Easy",
+    "question": "In a RESTful web API, which HTTP method is idempotent and primarily used to update an existing resource completely?",
+    "options": ["POST", "PUT", "PATCH", "DELETE"],
+    "correct_answer": "PUT",
+    "explanation": "PUT is idempotent, meaning multiple identical requests yield the same state on the server."
+  },
+  {
+    "question_id": "CS_DB_004",
+    "category": "Database Management",
+    "difficulty": "Medium",
+    "question": "Which SQL ACID property ensures that once a transaction has been committed, it will remain committed even in the event of a system crash?",
+    "options": ["Atomicity", "Consistency", "Isolation", "Durability"],
+    "correct_answer": "Durability",
+    "explanation": "Durability guarantees that committed transactions are permanently stored in non-volatile storage."
+  },
+  {
+    "question_id": "CS_OS_005",
+    "category": "Operating Systems",
+    "difficulty": "Hard",
+    "question": "Which CPU scheduling algorithm can lead to the 'convoy effect' where short processes wait for one long process to finish?",
+    "options": ["Round Robin", "First-Come, First-Served (FCFS)", "Shortest Remaining Time First", "Priority Scheduling"],
+    "correct_answer": "First-Come, First-Served (FCFS)",
+    "explanation": "In FCFS, CPU-bound long processes lock execution, creating a queue of delayed I/O-bound processes."
+  }
+]
