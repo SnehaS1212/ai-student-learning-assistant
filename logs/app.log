@@ -107,3 +107,7 @@
 2026-08-11 23:26:22,513 [INFO] 127.0.0.1 - - [11/Aug/2026 23:26:22] "GET /api/analytics HTTP/1.1" 200 -
 2026-08-11 23:26:22,530 [INFO] 127.0.0.1 - - [11/Aug/2026 23:26:22] "[32mGET /favicon.ico HTTP/1.1[0m" 302 -
 2026-08-11 23:26:22,567 [INFO] 127.0.0.1 - - [11/Aug/2026 23:26:22] "GET / HTTP/1.1" 200 -
+2026-08-11 23:33:50,877 [INFO] Database Tables initialized and records migrated successfully.
+2026-08-11 23:34:11,642 [INFO] Database Tables initialized and records migrated successfully.
+2026-08-11 23:34:34,045 [INFO] Database Tables initialized and records migrated successfully.
+2026-08-11 23:34:41,550 [INFO] Database Tables initialized and records migrated successfully.
