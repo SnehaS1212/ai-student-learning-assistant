@@ -43,5 +43,50 @@
     "options": ["Round Robin", "First-Come, First-Served (FCFS)", "Shortest Remaining Time First", "Priority Scheduling"],
     "correct_answer": "First-Come, First-Served (FCFS)",
     "explanation": "In FCFS, CPU-bound long processes lock execution, creating a queue of delayed I/O-bound processes."
+  },
+  {
+    "question_id": "CS_CN_006",
+    "category": "Computer Networks",
+    "difficulty": "Medium",
+    "question": "Which OSI layer is responsible for end-to-end flow control, segmentation, and error recovery using TCP?",
+    "options": ["Network Layer", "Transport Layer", "Data Link Layer", "Session Layer"],
+    "correct_answer": "Transport Layer",
+    "explanation": "The Transport Layer (Layer 4) handles reliable host-to-host transmission, sequence management, and error detection via TCP."
+  },
+  {
+    "question_id": "CS_DS_007",
+    "category": "Data Structures & Algorithms",
+    "difficulty": "Easy",
+    "question": "Which data structure follows the Last-In, First-Out (LIFO) principle?",
+    "options": ["Queue", "Stack", "Binary Tree", "LinkedList"],
+    "correct_answer": "Stack",
+    "explanation": "A Stack operates on a LIFO basis where the last element inserted is the first one removed."
+  },
+  {
+    "question_id": "CS_AI_008",
+    "category": "Artificial Intelligence & Machine Learning",
+    "difficulty": "Medium",
+    "question": "In Supervised Machine Learning, what problem occurs when a model performs exceptionally well on training data but fails to generalize to unseen test data?",
+    "options": ["Underfitting", "Overfitting", "Data Leakage", "Gradient Explosion"],
+    "correct_answer": "Overfitting",
+    "explanation": "Overfitting happens when a model learns noise and specific details of the training set rather than underlying patterns."
+  },
+  {
+    "question_id": "CS_SE_009",
+    "category": "Software Engineering",
+    "difficulty": "Easy",
+    "question": "Which architectural pattern separates an application into Model, View, and Controller components?",
+    "options": ["Microservices", "MVC", "Event-Driven", "Layered Architecture"],
+    "correct_answer": "MVC",
+    "explanation": "MVC decouples data access (Model), UI rendering (View), and application logic (Controller)."
+  },
+  {
+    "question_id": "CS_DB_010",
+    "category": "Database Management",
+    "difficulty": "Hard",
+    "question": "Which normal form requires a relation to be in 3NF and eliminates non-trivial functional dependencies X -> Y where X is not a superkey?",
+    "options": ["1NF", "2NF", "BCNF", "4NF"],
+    "correct_answer": "BCNF",
+    "explanation": "Boyce-Codd Normal Form (BCNF) is a stricter version of 3NF ensuring every determinant is a candidate key."
   }
 ]
