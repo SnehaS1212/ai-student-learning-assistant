@@ -54,6 +54,7 @@ The **AI Student Learning Assistant** is a full-stack Flask web application that
 | :--- | :--- | :--- |
 | 📊 **Presentation (PPT)** | [internship ppt.pptx](./docs/internship%20ppt.pptx) | Final Internship Presentation Slides |
 | 📑 **Internship Report** | [internship report.docx](./docs/internship%20report.docx) | Comprehensive Internship Project Report |
+| 📅 **Daily Internship Log** | [daily log.pdf](./logs/daily%20log.pdf) | Daily Internship Log & Activity Record |
 
 ---
 
@@ -165,8 +166,9 @@ ai-student-learning-assistant/
 │   ├── student_performance_dataset.csv
 │   └── sample_study_materials.json
 │
-├── logs/                   # System runtime logs
-│   └── app.log             # Application execution event log
+├── logs/                   # System runtime logs & internship activity logs
+│   ├── app.log             # Application execution event log
+│   └── daily log.pdf       # Daily Internship Log document
 │
 ├── templates/              # Jinja2 HTML templates
 │   ├── base.html           # Base layout with navigation
